@@ -302,24 +302,34 @@ void handleClearScreen() {
 // ==========================================
 
 void drawGrid() {
-  // Grid size: 60x60 on the left side
+  // Grid size: 71x61 on the left side
   // Top left: 0,0
-  // Cell size: 12x12
   
-  display.drawRect(0, 0, 61, 61, SSD1306_WHITE);
+  // Draw vertical lines
+  for (int i = 0; i <= 5; i++) {
+    int x = i * 14; // 0, 14, 28, 42, 56, 70
+    display.drawLine(x, 0, x, 60, SSD1306_WHITE);
+  }
+  
+  // Draw horizontal lines
+  for (int i = 0; i <= 5; i++) {
+    int y = i * 12; // 0, 12, 24, 36, 48, 60
+    display.drawLine(0, y, 70, y, SSD1306_WHITE);
+  }
+  
   for (int r = 0; r < 5; r++) {
     for (int c = 0; c < 5; c++) {
-      int x = c * 12 + 1;
+      int x = c * 14 + 1; // Start inside the border
       int y = r * 12 + 1;
       
       uint8_t val = board[r][c];
       if (val != 0) {
-        // Center text in 12x12 block
+        // Center text in 13x11 block
         // Standard font is 5x8 pixels
-        // If 1 digit: w=5, h=8. offset_x = (12-5)/2 = 3. offset_y = (12-8)/2 = 2
-        // If 2 digits: w=11, h=8. offset_x = (12-11)/2 = 0.
-        int tx = x + (val < 10 ? 3 : 0);
-        int ty = y + 2;
+        // If 1 digit: w=5, h=8. offset_x = (13-5)/2 = 4. offset_y = (11-8)/2 = 1
+        // If 2 digits: w=11, h=8. offset_x = (13-11)/2 = 1.
+        int tx = x + (val < 10 ? 4 : 1);
+        int ty = y + 2; // +2 looks more centered vertically usually
         
         display.setCursor(tx, ty);
         display.print(val);
@@ -335,14 +345,14 @@ void drawStartScreen() {
   
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(68, 10);
+  display.setCursor(75, 10);
   display.print(F("Time:"));
-  display.setCursor(68, 20);
+  display.setCursor(75, 20);
   display.print(F("0.0s"));
   
-  display.setCursor(68, 40);
+  display.setCursor(75, 40);
   display.print(F("Press"));
-  display.setCursor(68, 50);
+  display.setCursor(75, 50);
   display.print(F("to Start"));
 
   display.display();
@@ -355,12 +365,12 @@ void drawPlaying() {
   
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(68, 10);
+  display.setCursor(75, 10);
   display.print(F("Time:"));
   
   // Format time in 1/10 seconds (e.g., 12.3)
   uint32_t totalTenths = currentElapsedMs / 100;
-  display.setCursor(68, 20);
+  display.setCursor(75, 20);
   display.print(totalTenths / 10);
   display.print(F("."));
   display.print(totalTenths % 10);
@@ -376,15 +386,15 @@ void drawClearScreen() {
   
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(68, 0);
+  display.setCursor(75, 0);
   display.print(F("GAME"));
-  display.setCursor(68, 10);
+  display.setCursor(75, 10);
   display.print(F("CLEAR!"));
   
-  display.setCursor(68, 25);
+  display.setCursor(75, 25);
   display.print(F("Time:"));
   uint32_t totalTenths = clearTimeMs / 100;
-  display.setCursor(68, 35);
+  display.setCursor(75, 35);
   display.print(totalTenths / 10);
   display.print(F("."));
   display.print(totalTenths % 10);
